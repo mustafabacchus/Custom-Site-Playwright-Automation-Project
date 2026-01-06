@@ -1,0 +1,293 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Automation Practice Site</title>
+  <style>
+    body { font-family: Arial, sans-serif; margin: 0; padding: 0; background: #f4f7ff; }
+    header { display: flex; justify-content: space-between; align-items: center; padding: 20px; background: #1a3d7c; color: white; }
+    h1 { margin: 0; }
+
+    nav { background: #274b8a; padding: 10px 20px; }
+    nav a { margin-right: 20px; cursor: pointer; color: #cfe0ff; text-decoration: none; font-weight: bold; }
+    nav a:hover { color: white; }
+
+    .box { border: 1px solid #ccd4e0; padding: 20px; margin: 20px; background: white; border-radius: 8px; box-shadow: 0 2px 5px rgba(0,0,0,0.1); overflow-x: auto; }
+    table { border-collapse: collapse; width: 100%; }
+    th, td { border: 1px solid #1a3d7c; padding: 8px; text-align: left; }
+    th { background-color: #1a3d7c; color: white; }
+
+    button { padding: 8px 14px; margin: 6px; cursor: pointer; border: none; background: #1a3d7c; color: white; border-radius: 5px; font-weight: bold; }
+    button:hover { background: #274b8a; }
+    .hidden { display: none; }
+
+    #dragDropArea, #dragElement { width: 300px; height: 100px; border: 2px dashed #1a3d7c; display: flex; align-items: center; justify-content: center; margin: 10px 0; }
+    #dragDropArea.dragover, #dragElement.dragover { background-color: #cfe0ff; }
+    #dragElement { background-color: #cfe0ff; cursor: grab; }
+
+    .hoverBox { width: 100px; height: 100px; background: #1a3d7c; color: white; display: flex; align-items: center; justify-content: center; margin: 10px; }
+    .hoverBox:hover { background: #274b8a; cursor: pointer; }
+
+    /* Login form styling */
+    #formsPage label { display: block; margin: 10px 0; font-weight: bold; }
+    #formsPage input[type="text"], #formsPage input[type="password"] { width: 250px; padding: 6px; margin-left: 10px; border-radius: 4px; border: 1px solid #ccc; }
+    #formsPage button { margin-left: 10px; }
+
+    /* API input box */
+    #apiPage input[type="text"] { width: 300px; padding: 6px; margin: 6px 0; border-radius: 4px; border: 1px solid #ccc; }
+    #apiExamples { background: #eef2ff; padding: 10px; border-radius: 5px; margin-top: 10px; }
+
+    /* Popular sites styling */
+    #popularPage ul { list-style-type: none; padding-left: 0; }
+    #popularPage li { margin: 5px 0; }
+    #popularPage li a { text-decoration: none; color: #1a3d7c; font-weight: bold; }
+    #popularPage li a:hover { color: #274b8a; }
+  </style>
+</head>
+<body>
+<header>
+  <h1>Automation Practice Website</h1>
+  <div>
+    <span id="loginNotice" class="hidden">Logged in successfully</span>
+    <button id="logoutBtn" class="hidden" onclick="logout()">Logout</button>
+  </div>
+</header>
+<hr>
+
+<nav>
+  <a onclick="showPage('homePage')">Home</a>
+  <a onclick="showPage('formsPage')">Login</a>
+  <a onclick="showPage('radioCheckboxPage')">Radio/Checkbox</a>
+  <a onclick="showPage('tablePage')">Table</a>
+  <a onclick="showPage('apiPage')">API Testing</a>
+  <a onclick="showPage('advancedPage')">Advanced Elements</a>
+  <a onclick="showPage('popularPage')">Popular Sites</a>
+</nav>
+
+<div id="homePage" class="box">
+  <h2>Welcome! This is a splash screen.</h2>
+  <p>Use the navigation to access login, tables, APIs, and advanced elements.</p>
+</div>
+
+<div id="formsPage" class="box hidden">
+  <h2>Login Form</h2>
+  <label>Username: <input type="text" id="username"></label>
+  <label>Password: <input type="password" id="password"></label>
+  <button onclick="login()">Login</button>
+  <button onclick="clearLoginForm()">Clear Form</button>
+  <p>Use credentials: <strong>user / password</strong></p>
+  <p id="loginResult"></p>
+</div>
+
+<div id="radioCheckboxPage" class="box hidden">
+  <h2>Radio Buttons & Checkboxes</h2>
+  <h3>Radio Buttons</h3>
+  <label><input type="radio" name="color" value="Red"> Red</label>
+  <label><input type="radio" name="color" value="Blue"> Blue</label>
+  <label><input type="radio" name="color" value="Green"> Green</label>
+  <button onclick="confirmSelections()">Confirm Selection</button>
+  <p id="radioResult"></p>
+
+  <h3>Checkboxes</h3>
+  <label><input type="checkbox" class="chk" value="Option A"> Option A</label>
+  <label><input type="checkbox" class="chk" value="Option B"> Option B</label>
+  <label><input type="checkbox" class="chk" value="Option C"> Option C</label>
+  <button onclick="confirmSelections()">Confirm Selection</button>
+  <p id="checkboxResult"></p>
+
+  <h3>Dropdown</h3>
+  <select id="dropdown">
+    <option value="Option 1">Option 1</option>
+    <option value="Option 2">Option 2</option>
+    <option value="Option 3">Option 3</option>
+  </select>
+  <button onclick="showDropdownSelection()">Show Selected</button>
+  <p id="dropdownResult"></p>
+</div>
+
+<div id="tablePage" class="box hidden">
+  <h2>Table Automation Practice</h2>
+  <div style="overflow-x:auto;">
+    <table>
+      <tr><th>ID</th><th>Name</th><th>Action</th></tr>
+      <tr><td>1</td><td>Test 1</td><td><button onclick="tableAction(1)">Click</button></td></tr>
+      <tr><td>2</td><td>Test 2</td><td><button onclick="tableAction(2)">Click</button></td></tr>
+      <tr><td>3</td><td>Test 3</td><td><button onclick="tableAction(3)">Click</button></td></tr>
+    </table>
+  </div>
+  <p id="tableResult"></p>
+</div>
+
+<div id="apiPage" class="box hidden">
+  <h2>API Testing Practice</h2>
+  <label>Endpoint: <input type="text" id="apiInput" placeholder="Enter API endpoint"></label><br>
+  <button onclick="fakeGet()">GET Request</button>
+  <button onclick="fakePost()">POST Request</button>
+  <button onclick="fakePut()">PUT Request</button>
+  <p id="apiResult"></p>
+  <div id="apiExamples">
+    <h4>Example API Requests</h4>
+    <p>GET: https://jsonplaceholder.typicode.com/posts/1</p>
+    <p>POST: https://jsonplaceholder.typicode.com/posts</p>
+    <p>PUT: https://jsonplaceholder.typicode.com/posts/1</p>
+  </div>
+</div>
+
+<div id="advancedPage" class="box hidden">
+  <h2>Advanced Elements</h2>
+  <p>Dynamic elements, timed actions, hover effects, drag-and-drop, file upload/download, and other advanced interactions.</p>
+
+  <h3>Timed Element</h3>
+  <div id="timedBox">This box updates every 3 seconds</div>
+
+  <h3>Dynamic Element</h3>
+  <button onclick="addDynamicElement()">Add Element</button>
+  <div id="dynamicContainer"></div>
+
+  <h3>Drag & Drop</h3>
+  <div id="dragDropArea" ondragover="dragOver(event)" ondrop="drop(event)">Drop files here</div>
+
+  <h3>Draggable Element</h3>
+  <div id="dragElement" draggable="true" ondragstart="dragStart(event)">Drag Me</div>
+
+  <h3>Hidden Element</h3>
+  <div id="hiddenElement" class="hidden">This is a hidden element</div>
+  <button onclick="toggleHiddenElement()">Toggle Hidden Element</button>
+
+  <h3>Hover Element</h3>
+  <div class="hoverBox">Hover Me</div>
+
+  <h3>File Upload</h3>
+  <input type="file" id="fileUpload" onchange="confirmFileUpload()" />
+  <p id="fileResult"></p>
+
+  <h3>File Download</h3>
+  <button onclick="downloadFile()">Download Sample File</button>
+</div>
+
+<div id="popularPage" class="box hidden">
+  <h2>Popular Websites</h2>
+  <ul>
+    <li><a href="https://www.google.com" target="_blank" rel="noopener noreferrer">Google</a></li>
+    <li><a href="https://www.youtube.com" target="_blank" rel="noopener noreferrer">YouTube</a></li>
+    <li><a href="https://www.facebook.com" target="_blank" rel="noopener noreferrer">Facebook</a></li>
+    <li><a href="https://www.twitter.com" target="_blank" rel="noopener noreferrer">Twitter</a></li>
+    <li><a href="https://www.wikipedia.org" target="_blank" rel="noopener noreferrer">Wikipedia</a></li>
+  </ul>
+</div>
+
+<script>
+function showPage(id) {
+  document.querySelectorAll('.box').forEach(b => b.classList.add('hidden'));
+  document.getElementById(id).classList.remove('hidden');
+}
+
+const validUser = 'user';
+const validPass = 'password';
+function login() {
+  const u = document.getElementById('username').value;
+  const p = document.getElementById('password').value;
+  if(u === validUser && p === validPass) {
+    document.getElementById('loginNotice').classList.remove('hidden');
+    document.getElementById('logoutBtn').classList.remove('hidden');
+    document.getElementById('loginResult').innerText = 'Login successful';
+  } else {
+    document.getElementById('loginResult').innerText = 'Invalid credentials';
+  }
+}
+function logout() {
+  document.getElementById('loginNotice').classList.add('hidden');
+  document.getElementById('logoutBtn').classList.add('hidden');
+  document.getElementById('loginResult').innerText = '';
+  document.getElementById('username').value = '';
+  document.getElementById('password').value = '';
+}
+function clearLoginForm() {
+  document.getElementById('username').value = '';
+  document.getElementById('password').value = '';
+  document.getElementById('loginResult').innerText = '';
+}
+
+function confirmSelections() {
+  const selectedRadio = document.querySelector('input[name="color"]:checked');
+  const checks = [...document.querySelectorAll('.chk:checked')].map(c => c.value);
+  document.getElementById('radioResult').innerText = selectedRadio ? 'Radio selected: ' + selectedRadio.value : 'No radio selected';
+  document.getElementById('checkboxResult').innerText = checks.length ? 'Checkboxes: ' + checks.join(', ') : 'No checkboxes selected';
+}
+function showDropdownSelection() {
+  const val = document.getElementById('dropdown').value;
+  document.getElementById('dropdownResult').innerText = 'Selected: ' + val;
+}
+function tableAction(rowId) {
+  document.getElementById('tableResult').innerText = `Button clicked on row ${rowId}`;
+}
+function fakeGet() {
+  const endpoint = document.getElementById('apiInput').value;
+  document.getElementById('apiResult').innerText = 'GET request to ' + endpoint + ' simulated';
+  console.log('GET example:', 'https://jsonplaceholder.typicode.com/posts/1');
+}
+function fakePost() {
+  const endpoint = document.getElementById('apiInput').value;
+  document.getElementById('apiResult').innerText = 'POST request to ' + endpoint + ' simulated';
+  console.log('POST example:', 'https://jsonplaceholder.typicode.com/posts');
+}
+function fakePut() {
+  const endpoint = document.getElementById('apiInput').value;
+  document.getElementById('apiResult').innerText = 'PUT request to ' + endpoint + ' simulated';
+  console.log('PUT example:', 'https://jsonplaceholder.typicode.com/posts/1');
+}
+
+let timedCounter = 0;
+setInterval(() => {
+  timedCounter++;
+  document.getElementById('timedBox').innerText = `Timed box updated ${timedCounter} times`;
+}, 3000);
+
+function addDynamicElement() {
+  const div = document.createElement('div');
+  div.innerText = 'Dynamic Element ' + (document.getElementById('dynamicContainer').children.length + 1);
+  div.style.border = '1px solid #1a3d7c';
+  div.style.padding = '5px';
+  div.style.margin = '5px';
+  document.getElementById('dynamicContainer').appendChild(div);
+}
+
+function dragOver(e) { e.preventDefault(); e.currentTarget.classList.add('dragover'); }
+function drop(e) {
+  e.preventDefault();
+  e.currentTarget.classList.remove('dragover');
+  const files = e.dataTransfer.files;
+  document.getElementById('dragDropArea').innerText = files.length + ' file(s) dropped';
+}
+function dragStart(e) {
+  e.dataTransfer.setData('text', e.target.id);
+}
+
+function toggleHiddenElement() {
+  const el = document.getElementById('hiddenElement');
+  el.classList.toggle('hidden');
+}
+
+function downloadFile() {
+  const blob = new Blob(['Sample file content'], {type: 'text/plain'});
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = 'sample.txt';
+  a.click();
+  URL.revokeObjectURL(url);
+}
+
+function confirmFileUpload() {
+  const fileInput = document.getElementById('fileUpload');
+  if(fileInput.files.length > 0) {
+    document.getElementById('fileResult').innerText = `Uploaded file: ${fileInput.files[0].name}`;
+    alert(`File uploaded: ${fileInput.files[0].name}`);
+  } else {
+    document.getElementById('fileResult').innerText = 'No file selected';
+  }
+}
+</script>
+</body>
+</html>
