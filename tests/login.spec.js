@@ -49,6 +49,5 @@ test.describe('Login and Logout', () => {
         await expect(page.getByRole('textbox', { name: 'Password:' })).toBeEmpty();
         await expect(page.locator('#loginResult')).toBeHidden();
     });
-
-
+    
 });
