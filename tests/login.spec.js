@@ -4,11 +4,11 @@ import { goToLandingPage, Login } from './helper';
 
 
 test.describe('Login and Logout', () => {
-  let page;
-  test.beforeEach(async ({ browser }) => {
+    let page;
+    test.beforeEach(async ({ browser }) => {
     page = await browser.newPage();
-      await goToLandingPage(page);
-  });
+    await goToLandingPage(page);
+    });
 
     test('TC100 Successful Login and Logout', async() => {
         //LOGIN - GOOD
