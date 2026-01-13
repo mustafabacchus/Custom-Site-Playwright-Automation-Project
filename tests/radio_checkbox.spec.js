@@ -9,9 +9,9 @@ test.describe('Radio and Checkbox', () => {
         await page.getByRole('navigation').getByText('Radio/Checkbox').click();
     });
 
-    test('TC301 Dynamic Elements', async() => {
+    test('TC500 Radio Buttons', async() => {
         const radio_color = await page.locator(`input[type="radio"][name="${'color'}"]`).all();
-        console.log(radio_color.length)
+        console.log(radio_color.length);
     });
 
 });
