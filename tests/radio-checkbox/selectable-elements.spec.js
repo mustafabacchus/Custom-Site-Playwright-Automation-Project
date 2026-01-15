@@ -1,7 +1,8 @@
 import { test, expect } from '@playwright/test';
-import { goToLandingPage } from './helper';
+import { goToLandingPage } from '../../helpers/test-helper';
 
-test.describe('Radio / Checkbox / Dropdown', () => {
+
+test.describe('Select Element', () => {
     let page;
     test.beforeEach(async ({ browser }) => {
     page = await browser.newPage();
@@ -9,23 +10,26 @@ test.describe('Radio / Checkbox / Dropdown', () => {
         await page.getByRole('navigation').getByText('Radio/Checkbox').click();
     });
 
-
-    test('TC500 UI Confirm Selection - No Selection', async() => {
+    test('confirm selectable element has no selection or defaulted', async() => {
+        //radio
+        // default - no selection
         await expect(page.locator('radioResult')).toBeHidden();
         await page.locator('input[type="radio"][name="color"]').last().locator('xpath=following::button[1]').click();
         await expect(page.locator('#radioResult')).toBeVisible();
         await expect(page.locator('#radioResult')).toHaveText('No radio selected');
 
+        //checkbox
+        // default - no selection
         await expect(page.locator('checkboxResult')).toBeHidden();
         await page.locator('//h3[text()="Checkboxes"]/following::button[1]').last().click();
         await expect(page.locator('#checkboxResult')).toBeVisible();
         await expect(page.locator('#checkboxResult')).toHaveText('No checkboxes selected');
     });
 
-    test('TC501 Radio Buttons w/ Confirm Selection', async() => {
-        //get all radio buttons in the group
+    test('radio is selectable and user can confirm selection', async() => {
+        //get all radios in the group
         const radioGroupColor = await page.locator(`input[type="radio"][name="${'color'}"]`).all();
-        //check for correct number of buttons
+        //check for correct number of radios
         await expect(radioGroupColor.length).toBe(3);
         await expect(page.locator('#radioResult')).toBeHidden();
         for (const color of radioGroupColor) {
@@ -41,10 +45,10 @@ test.describe('Radio / Checkbox / Dropdown', () => {
         }
     });
 
-    test('TC502 Checkboxes w/ Confirm Selection', async() => {
+    test('checkbox is selectable and user can confirm selections', async() => {
         //get all checkboxes
         const checkboxes = await page.locator(`input[type="checkbox"]`).all();
-        //check for correct number of buttons
+        //check for correct number of checkboxes
         await expect(checkboxes.length).toBe(3);
         await expect(page.locator('#checkboxResult')).toBeHidden();
         let values = [];
@@ -52,6 +56,7 @@ test.describe('Radio / Checkbox / Dropdown', () => {
             //click on each one
             await checkbox.check();
             await expect(checkbox).toBeChecked();
+            //each checkbox is checked without uncheck
             values.push(await checkbox.getAttribute('value'));
             //ui user selection verification for all checked boxes
             await page.locator('//h3[text()="Checkboxes"]/following::button[1]').last().click();

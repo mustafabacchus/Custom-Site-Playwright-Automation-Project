@@ -1,16 +1,16 @@
 import { test, expect } from '@playwright/test';
-import { goToLandingPage } from './helper';
+import { goToLandingPage } from '../../helpers/test-helper';
 
 
-test.describe('Main Navigation Banner', () => {
+test.describe('Navigation', () => {
     let page;
     test.beforeEach(async ({ browser }) => {
       page = await browser.newPage();
         await goToLandingPage(page);
     });
 
-    test('TC200 Navigation Links', async() => {
-        //Static get all nav links and pages
+    test('should only show active page', async() => {
+        //static get all nav links from nav banner
         const navPages = [[page.getByRole('navigation').getByText('Home'), page.locator('#homePage')], 
         [page.getByRole('navigation').getByText('Login'), page.locator('#formsPage')], 
         [page.getByRole('navigation').getByText('Radio/Checkbox'), page.locator('#radioCheckboxPage')], 

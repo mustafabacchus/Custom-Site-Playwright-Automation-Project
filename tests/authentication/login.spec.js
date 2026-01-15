@@ -1,16 +1,15 @@
 import { test, expect } from '@playwright/test';
-import { goToLandingPage, Login } from './helper';
+import { goToLandingPage, Login } from '../../helpers/test-helper';
 
 
-
-test.describe('Login and Logout', () => {
+test.describe('Login', () => {
     let page;
     test.beforeEach(async ({ browser }) => {
     page = await browser.newPage();
     await goToLandingPage(page);
     });
 
-    test('TC100 Successful Login and Logout', async() => {
+    test('is successful then logout', async() => {
         //LOGIN - GOOD
         await Login(page, 'user', 'password')
         //Login result
@@ -30,7 +29,7 @@ test.describe('Login and Logout', () => {
         await expect(page.getByRole('button', { name: 'Logout' })).toBeHidden();
     });
 
-    test('TC101 Unsuccessful Login', async() => {
+    test('is unsuccessful', async() => {
         //LOGIN - BAD
         await Login(page, 'testuser', 'testpass')
         //Login result
@@ -39,7 +38,7 @@ test.describe('Login and Logout', () => {
         await expect(page.getByRole('button', { name: 'Logout' })).toBeHidden();
     });
 
-    test('TC102 Clear Fields', async() => {
+    test('fields are cleared using "clear fields"', async() => {
         //Blank credentials
         await Login(page, 'cuser', 'cpass')
         //Clear form
