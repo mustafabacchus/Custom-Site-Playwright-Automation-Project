@@ -24,11 +24,11 @@ test.describe('Radio / Checkbox / Dropdown', () => {
 
     test('TC501 Radio Buttons w/ Confirm Selection', async() => {
         //get all radio buttons in the group
-        const radio_color = await page.locator(`input[type="radio"][name="${'color'}"]`).all();
+        const radioGroupColor = await page.locator(`input[type="radio"][name="${'color'}"]`).all();
         //check for correct number of buttons
-        await expect(radio_color.length).toBe(3);
+        await expect(radioGroupColor.length).toBe(3);
         await expect(page.locator('#radioResult')).toBeHidden();
-        for (const color of radio_color) {
+        for (const color of radioGroupColor) {
             //click on each one
             await color.check();
             await expect(color).toBeChecked();

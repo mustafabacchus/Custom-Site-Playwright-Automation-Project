@@ -14,7 +14,6 @@ export async function Login(page, user, pass) {
 }
 
 export async function bufferUpload(uploadPromise, fileType) {
-	const file_type = fileType;
 	const content = "test upload file.";
 	const buffer = Buffer.from(content);
 	const upload = await uploadPromise;

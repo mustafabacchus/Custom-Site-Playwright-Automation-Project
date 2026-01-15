@@ -14,39 +14,39 @@ test.describe('Advanced Elements', () => {
     });
 
     test('TC300 Timed Element', async() => {
-        const timed_element = await page.locator('#timedBox');
+        const timedBox = await page.locator('#timedBox');
         //get the initial text
-        let initial_text = await timed_element.textContent();
+        let initialText = await timedBox.textContent();
         //check if element changes x times
-        const num_changes = getRandomArbitrary(2, 10)
-        for (let i = 0; i < num_changes; ++i) {
-            console.log(initial_text);
+        const numChanges = getRandomArbitrary(2, 10)
+        for (let i = 0; i < numChanges; ++i) {
+            console.log(initialText);
             //wait for the element to change
-            await expect(timed_element).not.toHaveText(initial_text);
+            await expect(timedBox).not.toHaveText(initialText);
             //update with the new text
-            initial_text = await timed_element.textContent();
+            initialText = await timedBox.textContent();
         }
     });
 
     test('TC301 Dynamic Elements', async() => {
         //click on the dynamic element x times
-        const dyn_clicks = getRandomArbitrary(2, 10);
-        for (let i = 0; i < dyn_clicks; ++i) {
+        const dynClicks = getRandomArbitrary(2, 10);
+        for (let i = 0; i < dynClicks; ++i) {
             await page.getByRole('button', { name: 'Add Element' }).click();
         }
         //the dynamic elements created equal the clicks
-        await expect(page.locator('#dynamicContainer > div')).toHaveCount(dyn_clicks);
+        await expect(page.locator('#dynamicContainer > div')).toHaveCount(dynClicks);
     });
 
 
     //FILE UPLOAD
     test('TC306.A File Upload - From Buffer', async() => {
         //wait for upload
-        const upload_promise = page.waitForEvent('filechooser');
+        const uploadPromise = page.waitForEvent('filechooser');
         await page.getByRole('button', { name: 'Choose File' }).click();
-        const upload = await upload_promise;
+        const upload = await uploadPromise;
         //upload from buffer
-        bufferUpload(upload_promise, 'txt');
+        bufferUpload(uploadPromise, 'txt');
         //check file is uploaded
         await expect(page.locator('#fileResult')).toBeVisible();
         await expect(page.locator('#fileResult')).toContainText('Uploaded')
@@ -54,10 +54,10 @@ test.describe('Advanced Elements', () => {
 
     test.skip('TC306.B File Upload - From Directory', async() => {
         //wait for upload
-        const upload_promise = page.waitForEvent('filechooser');
+        const uploadPromise = page.waitForEvent('filechooser');
         //click on upload
         await page.getByRole('button', { name: 'Choose File' }).click();
-        const upload = await upload_promise;
+        const upload = await uploadPromise;
         //upload from local code base
         await upload.setFiles(path.join('./test-files/uploads', 'test_upload.txt'));
         //check file is uploaded
@@ -67,10 +67,10 @@ test.describe('Advanced Elements', () => {
 
     test('TC306.C File Upload - Cancel Upload', async() => {
         //wait for upload
-        const upload_promise = page.waitForEvent('filechooser');
+        const uploadPromise = page.waitForEvent('filechooser');
         //click on upload
         await page.getByRole('button', { name: 'Choose File' }).click();
-        const upload = await upload_promise;
+        const upload = await uploadPromise;
         //cancel upload
         await upload.setFiles([]);
         //check no file is uploaded
@@ -82,10 +82,10 @@ test.describe('Advanced Elements', () => {
     //FILE DOWNLOAD
     test('TC307.A File Download - To Buffer', async() => {
         //wait for download
-        const download_promise = page.waitForEvent('download');
+        const downloadPromise = page.waitForEvent('download');
         //click on download
         await page.getByRole('button', { name: 'Download Sample File' }).click();
-        const download = await download_promise;
+        const download = await downloadPromise;
         //download exists
         await expect(download).toBeTruthy();
         console.log(download.suggestedFilename());
@@ -93,18 +93,18 @@ test.describe('Advanced Elements', () => {
 
     test.skip('TC307.B File Download - To Directory', async() => {
         //wait for download
-        const download_promise = page.waitForEvent('download');
+        const downloadPromise = page.waitForEvent('download');
         //click on download
         await page.getByRole('button', { name: 'Download Sample File' }).click();
-        const download = await download_promise;
+        const download = await downloadPromise;
         //get a filename and timestamp
-        const suggest_name = download.suggestedFilename();
+        const suggestName = download.suggestedFilename();
         const timestamp = getTimestamp();
         //save the file to local code base
-        const download_path = path.join('./test-files/downloads', `${timestamp}${suggest_name}`);
-        await download.saveAs(download_path);
+        const downloadPath = path.join('./test-files/downloads', `${timestamp}${suggestName}`);
+        await download.saveAs(downloadPath);
         //download exists
-        expect(fs.existsSync(download_path)).toBe(true);
+        expect(fs.existsSync(downloadPath)).toBe(true);
     });
 
 });
