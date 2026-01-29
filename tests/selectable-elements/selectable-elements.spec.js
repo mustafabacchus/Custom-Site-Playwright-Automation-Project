@@ -10,20 +10,36 @@ test.describe('Select Element', () => {
         await page.getByRole('navigation').getByText('Radio/Checkbox').click();
     });
 
-    test('confirm selectable element has no selection or defaulted', async() => {
+    test('confirm radio default selection', async() => {
         //radio
-        // default - no selection
-        await expect(page.locator('radioResult')).toBeHidden();
-        await page.locator('input[type="radio"][name="color"]').last().locator('xpath=following::button[1]').click();
+        //default - no selection
+        await expect(page.locator('#radioResult')).toBeHidden();
+        //confirm selection on the ui
+        await page.locator('//*[@id="radioCheckboxPage"]/button[1]').click();
         await expect(page.locator('#radioResult')).toBeVisible();
         await expect(page.locator('#radioResult')).toHaveText('No radio selected');
+     });
 
+    test('confirm checkbox default selection', async() => {
         //checkbox
-        // default - no selection
-        await expect(page.locator('checkboxResult')).toBeHidden();
-        await page.locator('//h3[text()="Checkboxes"]/following::button[1]').last().click();
+        //default - no selection
+        await expect(page.locator('#checkboxResult')).toBeHidden();
+        //confirm selection on the ui
+        await page.locator('//*[@id="radioCheckboxPage"]/button[2]').click();
         await expect(page.locator('#checkboxResult')).toBeVisible();
         await expect(page.locator('#checkboxResult')).toHaveText('No checkboxes selected');
+    });
+
+    test('confirm dropdown default selection', async() => {
+        //dropdown
+        //default - 1st option
+        await expect(page.locator('#dropdownResult')).toBeHidden();
+        //confirm selection on the ui
+        await page.locator('//*[@id="radioCheckboxPage"]/button[3]').click();
+        await expect(page.locator('#dropdownResult')).toBeVisible();
+        const first_option = await page.locator('select#dropdown option:first-child').getAttribute('value');
+        await expect(page.locator('#dropdownResult')).toHaveText(`Selected: ${first_option}`);
+
     });
 
     test('radio is selectable and user can confirm selection', async() => {
@@ -38,7 +54,7 @@ test.describe('Select Element', () => {
             await expect(color).toBeChecked();
             const value = await color.getAttribute('value');
             //ui user selection verification
-            await page.locator('input[type="radio"][name="color"]').last().locator('xpath=following::button[1]').click();
+            await page.locator('//*[@id="radioCheckboxPage"]/button[1]').click();
             await expect(page.locator('#radioResult')).toBeVisible();
             await expect(page.locator('#radioResult')).toContainText(value);
             console.log(`Clicked: ${value}`);
@@ -56,10 +72,10 @@ test.describe('Select Element', () => {
             //click on each one
             await checkbox.check();
             await expect(checkbox).toBeChecked();
-            //each checkbox is checked without uncheck
+            //each checkbox is checked without unchecking it
             values.push(await checkbox.getAttribute('value'));
             //ui user selection verification for all checked boxes
-            await page.locator('//h3[text()="Checkboxes"]/following::button[1]').last().click();
+            await page.locator('//*[@id="radioCheckboxPage"]/button[2]').click();
             await expect(page.locator('#checkboxResult')).toBeVisible();
             for (const value of values) {
                 await expect(page.locator('#checkboxResult')).toContainText(value);
@@ -67,6 +83,27 @@ test.describe('Select Element', () => {
             console.log(`Checked Values: ${values}`);
         }
     });
+
+    test('option from dropdown is selectable and user can confirm selection', async() => {
+        //get the dropdown and its options
+        const dropdown = page.locator('#dropdown');
+        const options = dropdown.locator('option');
+        //check for expected options
+        await expect(options).toHaveCount(3);
+        await expect(page.locator('#dropdownResult')).toBeHidden();
+        //select each option
+        for (let i = 0; i < await options.count(); i++) {
+            const value = await options.nth(i).getAttribute('value');
+            await dropdown.selectOption(value);
+            await expect(dropdown).toHaveValue(value);
+            //ui user can verify option selected
+            await page.locator('//*[@id="radioCheckboxPage"]/button[3]').click();
+            await expect(page.locator('#dropdownResult')).toBeVisible();
+            await expect(page.locator('#dropdownResult')).toContainText(value);
+            console.log(`Dropdown Selected: ${value}`);
+        }
+    });
+        
 
 });
 
